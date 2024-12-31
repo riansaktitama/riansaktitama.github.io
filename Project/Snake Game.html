@@ -9,6 +9,9 @@
             align-items: center;
             background-color: #f0f0f0;
             font-family: Arial, sans-serif;
+            margin: 0;
+            height: 100vh;
+            justify-content: center;
         }
         canvas {
             border: 2px solid #000;
@@ -34,6 +37,35 @@
             background-color: #ff0000;
             color: white;
         }
+        .controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .row {
+            display: flex;
+            justify-content: center;
+        }
+        .control-btn {
+            width: 60px;
+            height: 60px;
+            font-size: 30px;
+            margin: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .control-btn:active {
+            background-color: #0056b3;
+        }
+        .control-btn:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -43,6 +75,15 @@
         <button id="quitButton">Quit</button>
     </div>
     <canvas id="gameCanvas" width="600" height="400"></canvas>
+
+    <div class="controls">
+        <button class="control-btn" id="up">↑</button>
+        <div class="row">
+            <button class="control-btn" id="left">←</button>
+            <button class="control-btn" id="right">→</button>
+        </div>
+        <button class="control-btn" id="down">↓</button>
+    </div>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
@@ -218,6 +259,20 @@
             }
         });
 
+        // Kontrol untuk mobile
+        document.getElementById('up').addEventListener('click', () => {
+            if (isValidDirection(direction, 'UP')) nextDirection = 'UP';
+        });
+        document.getElementById('down').addEventListener('click', () => {
+            if (isValidDirection(direction, 'DOWN')) nextDirection = 'DOWN';
+        });
+        document.getElementById('left').addEventListener('click', () => {
+            if (isValidDirection(direction, 'LEFT')) nextDirection = 'LEFT';
+        });
+        document.getElementById('right').addEventListener('click', () => {
+            if (isValidDirection(direction, 'RIGHT')) nextDirection = 'RIGHT';
+        });
+
         playButton.addEventListener('click', () => {
             menu.style.display = 'none';
             gameStarted = true;
@@ -229,10 +284,6 @@
             window.close();
         });
 
-        // Initial setup
-        menu.style.display = 'block';
-        drawGrid();
-        drawBorders();
     </script>
 </body>
 </html>
