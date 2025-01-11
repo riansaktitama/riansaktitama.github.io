@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
+        
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            gap: 5px;
+            background-color: #333;
+            padding: 5px;
+            margin: 20px 0;
+        }
+        
+        .cell {
+            width: 100px;
+            height: 100px;
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+            cursor: pointer;
+        }
+        
+        .cell:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .status {
+            font-size: 20px;
+            margin: 10px 0;
+        }
+        
+        .restart {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        
+        .restart:hover {
+            background-color: #45a049;
+        }
+        
+        .deleted {
+            background-color: #ffebee;
+        }
+
+        .move-history {
+            margin-top: 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Special Rules Tic Tac Toe</h1>
+        <div class="status"></div>
+        <div class="board"></div>
+        <div class="move-history"></div>
+        <button class="restart">Restart Game</button>
+    </div>
+
+    <script>
+        class TicTacToe {
+            constructor() {
+                this.board = Array(9).fill('');
+                this.currentPlayer = 'X';
+                this.moves = [];
+                this.gameOver = false;
+                this.lastDeletedPosition = null;
+                this.setupBoard();
+                this.updateStatus();
+                this.updateMoveHistory();
+            }
+
+            setupBoard() {
+                const boardElement = document.querySelector('.board');
+                boardElement.innerHTML = '';
+                
+                for (let i = 0; i < 9; i++) {
+                    const cell = document.createElement('div');
+                    cell.classList.add('cell');
+                    cell.dataset.index = i;
+                    cell.addEventListener('click', () => this.handleClick(i));
+                    boardElement.appendChild(cell);
+                }
+            }
+
+            handleClick(index) {
+                // Check if the move is valid
+                if (this.gameOver || this.board[index] !== '') return;
+                
+                // Check if trying to play in the last deleted position
+                if (index === this.lastDeletedPosition) {
+                    alert("You cannot play in the just-deleted position for this turn!");
+                    return;
+                }
+
+                // Make the move
+                this.board[index] = this.currentPlayer;
+                this.moves.push({player: this.currentPlayer, position: index});
+                this.updateCell(index);
+
+                // Clear the "deleted" visual state from the previous deleted position
+                if (this.lastDeletedPosition !== null) {
+                    document.querySelector(`[data-index="${this.lastDeletedPosition}"]`).classList.remove('deleted');
+                }
+
+                // Check for winner
+                if (this.checkWinner()) {
+                    this.gameOver = true;
+                    this.updateStatus(`${this.currentPlayer} wins!`);
+                    return;
+                }
+
+                // After 6 moves (3 each), start deleting oldest moves
+                if (this.moves.length >= 6) {
+                    const moveToDelete = this.moves[this.moves.length - 6];
+                    this.deleteMove(moveToDelete.position);
+                }
+
+                this.currentPlayer = this.currentPlayer === 'X' ? 'O' : 'X';
+                this.updateStatus();
+                this.updateMoveHistory();
+            }
+
+            deleteMove(position) {
+                this.board[position] = '';
+                this.lastDeletedPosition = position;
+                const cell = document.querySelector(`[data-index="${position}"]`);
+                cell.textContent = '';
+                cell.classList.add('deleted');
+            }
+
+            updateCell(index) {
+                const cell = document.querySelector(`[data-index="${index}"]`);
+                cell.textContent = this.board[index];
+            }
+
+            updateMoveHistory() {
+                const historyElement = document.querySelector('.move-history');
+                const activeMoves = this.moves.slice(-6);
+                historyElement.innerHTML = `Active moves: ${activeMoves.map(move => 
+                    `${move.player}(${Math.floor(move.position / 3)},${move.position % 3})`
+                ).join(' → ')}`;
+            }
+
+            checkWinner() {
+                const winPatterns = [
+                    [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+                    [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+                    [0, 4, 8], [2, 4, 6]             // Diagonals
+                ];
+
+                return winPatterns.some(pattern => {
+                    const [a, b, c] = pattern;
+                    return this.board[a] &&
+                           this.board[a] === this.board[b] &&
+                           this.board[a] === this.board[c];
+                });
+            }
+
+            updateStatus() {
+                const status = document.querySelector('.status');
+                if (!this.gameOver) {
+                    status.textContent = `Current player: ${this.currentPlayer}`;
+                }
+            }
+
+            restart() {
+                this.board = Array(9).fill('');
+                this.currentPlayer = 'X';
+                this.moves = [];
+                this.gameOver = false;
+                this.lastDeletedPosition = null;
+                
+                // Clear all deleted visual states
+                document.querySelectorAll('.cell').forEach(cell => {
+                    cell.classList.remove('deleted');
+                });
+                
+                this.setupBoard();
+                this.updateStatus();
+                this.updateMoveHistory();
+            }
+        }
+
+        const game = new TicTacToe();
+        document.querySelector('.restart').addEventListener('click', () => game.restart());
+    </script>
+</body>
+</html>
