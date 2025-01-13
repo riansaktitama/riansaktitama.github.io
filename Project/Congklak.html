@@ -176,7 +176,7 @@
   <div class="board">
     <div class="turn-indicator" id="turnIndicator">Giliran Pemain 1</div>
 
-    <div class="lumbung" id="lumbung1">
+    <div class="lumbung" id="lumbung2">
       <div class="seeds"></div>
       <div class="number">0</div>
     </div>
@@ -245,7 +245,7 @@
       </div>
     </div>
 
-    <div class="lumbung" id="lumbung2">
+    <div class="lumbung" id="lumbung1">
       <div class="seeds"></div>
       <div class="number">0</div>
     </div>
@@ -357,7 +357,7 @@
           const lastHoleCount = parseInt(lastHole.querySelector('.number').textContent);
 
           if (lastHoleCount > 1) {
-            setTimeout(() => distributeSeeds(lastHole), 0);
+            setTimeout(() => distributeSeeds(lastHole), 500);
             return;
           }
 
@@ -443,11 +443,11 @@
           updateHole(targetHole, currentCount + 1);
           seeds--;
           updateTempContainer(seeds);
-          setTimeout(distributeNext, 0);
+          setTimeout(distributeNext, 300);
         });
       }
 
-      setTimeout(distributeNext, 0);
+      setTimeout(distributeNext, 100);
     }
 
     holes.forEach(hole => {
