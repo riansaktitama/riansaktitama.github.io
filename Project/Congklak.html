@@ -5,174 +5,105 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Congklak Game</title>
   <style>
+/* Orientation warning */
+#orientationWarning { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.8); color: white; display: flex; justify-content: center; align-items: center; text-align: center; font-size: 24px; z-index: 1000; /* Pastikan pesan muncul di atas semua elemen */ }
+
+body { margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f0e68c; font-family: Arial, sans-serif; }
+
+.board { 
+    display: flex; 
+    background-color: #8b4513; 
+    padding: 20px; 
+    border-radius: 20px; 
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); 
+    position: relative; 
+    height: 500px; 
+    align-items: center;
+    max-width: 90vw;  /* Add max-width to prevent overflow */
+    overflow-x: auto; /* Allow horizontal scroll if needed */
+    min-width: 800px; /* Minimum width to maintain layout */
+}
+
+.lumbung { 
+    min-width: 200px; /* Add minimum width */
+    width: 200px; 
+    height: 200px; 
+    background-color: #a0522d; 
+    border-radius: 50%; 
+    margin: 0 20px; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    position: relative;
+    flex-shrink: 0; /* Prevent lumbung from shrinking */
+}
+
+.lumbung .number { position: absolute; bottom: -30px; font-size: 24px; color: white; }
+.lumbung .seeds { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 5px; }
+.holes-container { display: flex; flex-direction: column; justify-content: space-between; height: 100%; width: 100%; }
+.holes-row { display: flex; justify-content: space-between; gap: 20px; position: relative; }
+.holes-row.top { margin-top: 30px; }
+.holes-row.bottom { margin-bottom: 30px; }
+
+.hole { 
+    width: 100px; 
+    height: 100px; 
+    background-color: #a0522d; 
+    border-radius: 50%; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    position: relative; 
+    cursor: pointer;
+    flex-shrink: 0; /* Prevent holes from shrinking */
+}
+
+.hole .number { position: absolute; font-size: 20px; color: white; }
+.holes-row.top .hole .number { top: -30px; }
+.holes-row.bottom .hole .number { bottom: -30px; }
+.hole .seeds { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 5px; }
+.seed { width: 10px; height: 10px; background-color: white; border-radius: 50%; }
+.seed-temp { position: absolute; width: 10px; height: 10px; background-color: white; border-radius: 50%; transition: all 0.3s ease; }
+
+.temp-container { 
+    position: absolute; 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+    width: 100px; 
+    height: 100px; 
+    background-color: rgba(160, 82, 45, 0.9); 
+    border: 2px dashed white; 
+    border-radius: 50%; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    z-index: 10;
+    flex-shrink: 0; /* Prevent temp container from shrinking */
+}
+
+.temp-container .seeds { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 5px; max-width: 80%; }
+.temp-container .number { position: absolute; bottom: -30px; font-size: 20px; color: white; }
+.hole:hover { background-color: #8b4513; }
+.turn-indicator { position: absolute; top: 0px; left: 50%; transform: translateX(-50%); font-size: 24px; color: rgb(0, 0, 0); }
+
+/* Add media query for screens smaller than 900px */
+@media screen and (max-width: 900px) {
     body {
-      margin: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background-color: #f0e68c;
-      font-family: Arial, sans-serif;
+        align-items: flex-start; /* Allow scrolling on small screens */
+        padding: 20px 0;
     }
-
+    
     .board {
-      display: flex;
-      background-color: #8b4513;
-      padding: 20px;
-      border-radius: 20px;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-      position: relative;
-      height: 500px;
-      align-items: center;
+        margin: 0 auto; /* Center the board */
     }
-
-    .lumbung {
-      width: 200px;
-      height: 200px;
-      background-color: #a0522d;
-      border-radius: 50%;
-      margin: 0 20px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: relative;
-    }
-
-    .lumbung .number {
-      position: absolute;
-      bottom: -30px;
-      font-size: 24px;
-      color: white;
-    }
-
-    .lumbung .seeds {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .holes-container {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      height: 100%;
-      width: 100%;
-    }
-
-    .holes-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 20px;
-      position: relative;
-    }
-
-    .holes-row.top {
-      margin-top: 30px;
-    }
-
-    .holes-row.bottom {
-      margin-bottom: 30px;
-    }
-
-    .hole {
-      width: 100px;
-      height: 100px;
-      background-color: #a0522d;
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: relative;
-      cursor: pointer;
-    }
-
-    .hole .number {
-      position: absolute;
-      font-size: 20px;
-      color: white;
-    }
-
-    .holes-row.top .hole .number {
-      top: -30px;
-    }
-
-    .holes-row.bottom .hole .number {
-      bottom: -30px;
-    }
-
-    .hole .seeds {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .seed {
-      width: 10px;
-      height: 10px;
-      background-color: white;
-      border-radius: 50%;
-    }
-
-    .seed-temp {
-      position: absolute;
-      width: 10px;
-      height: 10px;
-      background-color: white;
-      border-radius: 50%;
-      transition: all 0.3s ease;
-    }
-
-    .temp-container {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 100px;
-      height: 100px;
-      background-color: rgba(160, 82, 45, 0.9);
-      border: 2px dashed white;
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 10;
-    }
-
-    .temp-container .seeds {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      align-items: center;
-      gap: 5px;
-      max-width: 80%;
-    }
-
-    .temp-container .number {
-      position: absolute;
-      bottom: -30px;
-      font-size: 20px;
-      color: white;
-    }
-
-    .hole:hover {
-      background-color: #8b4513;
-    }
-
-    .turn-indicator {
-      position: absolute;
-      top: 0px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 24px;
-      color: rgb(0, 0, 0);
-    }
+}
   </style>
 </head>
 <body>
+  <div id="orientationWarning" style="display: none;">
+    <p>Silakan putar perangkat Anda ke mode horizontal untuk memainkan permainan!</p>
+  </div>
   <div class="board">
     <div class="turn-indicator" id="turnIndicator">Giliran Pemain 1</div>
 
@@ -462,6 +393,21 @@
     });
 
     updateTurnIndicator();
+    function checkOrientation() {
+        const orientationWarning = document.getElementById('orientationWarning');
+        const isPortrait = window.matchMedia('(orientation: portrait)').matches;
+
+        if (isPortrait) {
+            orientationWarning.style.display = 'flex'; // Tampilkan pesan
+        } else {
+            orientationWarning.style.display = 'none'; // Sembunyikan pesan
+        }
+        }
+
+        // Jalankan fungsi saat halaman dimuat dan saat orientasi berubah
+        window.addEventListener('load', checkOrientation);
+        window.addEventListener('resize', checkOrientation);
+        window.addEventListener('orientationchange', checkOrientation);
   </script>
 </body>
 </html>
