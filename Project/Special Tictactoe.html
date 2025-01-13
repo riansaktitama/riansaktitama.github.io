@@ -1,14 +1,41 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Special Rules Tic Tac Toe</title>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body.dark-mode {
+            background-color: #121212;
+            color: #ffffff;
+        }
+
         .game-container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s;
         }
-        
+
+        body.dark-mode .game-container {
+            background-color: #1e1e1e;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
         .board {
             display: grid;
             grid-template-columns: repeat(3, 100px);
@@ -17,7 +44,7 @@
             padding: 5px;
             margin: 20px 0;
         }
-        
+
         .cell {
             width: 100px;
             height: 100px;
@@ -27,17 +54,45 @@
             align-items: center;
             font-size: 40px;
             cursor: pointer;
+            transition: background-color 0.3s;
         }
-        
+
+        body.dark-mode .cell {
+            background-color: #333;
+            color: #ffffff;
+        }
+
         .cell:hover {
             background-color: #f0f0f0;
         }
-        
+
+        body.dark-mode .cell:hover {
+            background-color: #444;
+        }
+
+        .cell.x {
+            color: #ff5722; /* Warna untuk X */
+        }
+
+        .cell.o {
+            color: #2196f3; /* Warna untuk O */
+        }
+
+        .deleted {
+            background-color: #ffebee;
+            animation: fadeOut 0.5s ease-in-out;
+        }
+
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+
         .status {
             font-size: 20px;
             margin: 10px 0;
         }
-        
+
         .restart {
             padding: 10px 20px;
             font-size: 16px;
@@ -46,30 +101,100 @@
             color: white;
             border: none;
             border-radius: 5px;
+            transition: background-color 0.3s;
         }
-        
+
+        body.dark-mode .restart {
+            background-color: #555;
+        }
+
         .restart:hover {
             background-color: #45a049;
         }
-        
-        .deleted {
-            background-color: #ffebee;
+
+        body.dark-mode .restart:hover {
+            background-color: #666;
         }
 
-        .move-history {
-            margin-top: 20px;
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        body.dark-mode .modal-content {
+            background-color: #1e1e1e;
+            color: #ffffff;
+        }
+
+        #closeModal {
+            padding: 10px 20px;
             font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        #closeModal:hover {
+            background-color: #45a049;
+        }
+
+        #darkModeToggle {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        body.dark-mode #darkModeToggle {
+            background-color: #555;
+        }
+
+        #darkModeToggle:hover {
+            background-color: #444;
         }
     </style>
 </head>
 <body>
     <div class="game-container">
         <h1>Special Rules Tic Tac Toe</h1>
-        <div class="status"></div>
+        <div class="status">Current player: X</div>
         <div class="board"></div>
-        <div class="move-history"></div>
         <button class="restart">Restart Game</button>
+        <button id="darkModeToggle">Toggle Dark Mode</button>
     </div>
+
+    <!-- Winner Modal -->
+    <div id="winnerModal" class="modal">
+        <div class="modal-content">
+            <span id="winnerMessage"></span>
+            <button id="closeModal">Close</button>
+        </div>
+    </div>
+
+    <!-- Audio Elements -->
+    <audio id="clickSound" src="click.mp3"></audio>
+    <audio id="winSound" src="win.mp3"></audio>
 
     <script>
         class TicTacToe {
@@ -79,15 +204,28 @@
                 this.moves = [];
                 this.gameOver = false;
                 this.lastDeletedPosition = null;
+
+                this.winnerModal = document.getElementById('winnerModal');
+                this.winnerMessage = document.getElementById('winnerMessage');
+                this.clickSound = document.getElementById('clickSound');
+                this.winSound = document.getElementById('winSound');
+
                 this.setupBoard();
                 this.updateStatus();
-                this.updateMoveHistory();
+
+                document.querySelector('.restart').addEventListener('click', () => this.restart());
+                document.getElementById('closeModal').addEventListener('click', () => {
+                    this.winnerModal.style.display = 'none';
+                });
+                document.getElementById('darkModeToggle').addEventListener('click', () => {
+                    document.body.classList.toggle('dark-mode');
+                });
             }
 
             setupBoard() {
                 const boardElement = document.querySelector('.board');
                 boardElement.innerHTML = '';
-                
+
                 for (let i = 0; i < 9; i++) {
                     const cell = document.createElement('div');
                     cell.classList.add('cell');
@@ -98,33 +236,29 @@
             }
 
             handleClick(index) {
-                // Check if the move is valid
                 if (this.gameOver || this.board[index] !== '') return;
-                
-                // Check if trying to play in the last deleted position
                 if (index === this.lastDeletedPosition) {
                     alert("You cannot play in the just-deleted position for this turn!");
                     return;
                 }
 
-                // Make the move
                 this.board[index] = this.currentPlayer;
-                this.moves.push({player: this.currentPlayer, position: index});
+                this.moves.push({ player: this.currentPlayer, position: index });
                 this.updateCell(index);
+                this.clickSound.play();
 
-                // Clear the "deleted" visual state from the previous deleted position
                 if (this.lastDeletedPosition !== null) {
                     document.querySelector(`[data-index="${this.lastDeletedPosition}"]`).classList.remove('deleted');
                 }
 
-                // Check for winner
                 if (this.checkWinner()) {
+                    this.winSound.play();
                     this.gameOver = true;
-                    this.updateStatus(`${this.currentPlayer} wins!`);
+                    this.winnerMessage.textContent = `${this.currentPlayer} wins!`;
+                    this.winnerModal.style.display = 'flex';
                     return;
                 }
 
-                // After 6 moves (3 each), start deleting oldest moves
                 if (this.moves.length >= 6) {
                     const moveToDelete = this.moves[this.moves.length - 6];
                     this.deleteMove(moveToDelete.position);
@@ -132,7 +266,6 @@
 
                 this.currentPlayer = this.currentPlayer === 'X' ? 'O' : 'X';
                 this.updateStatus();
-                this.updateMoveHistory();
             }
 
             deleteMove(position) {
@@ -146,14 +279,7 @@
             updateCell(index) {
                 const cell = document.querySelector(`[data-index="${index}"]`);
                 cell.textContent = this.board[index];
-            }
-
-            updateMoveHistory() {
-                const historyElement = document.querySelector('.move-history');
-                const activeMoves = this.moves.slice(-6);
-                historyElement.innerHTML = `Active moves: ${activeMoves.map(move => 
-                    `${move.player}(${Math.floor(move.position / 3)},${move.position % 3})`
-                ).join(' → ')}`;
+                cell.classList.add(this.board[index].toLowerCase()); // Tambahkan kelas untuk warna
             }
 
             checkWinner() {
@@ -184,20 +310,18 @@
                 this.moves = [];
                 this.gameOver = false;
                 this.lastDeletedPosition = null;
-                
-                // Clear all deleted visual states
+
                 document.querySelectorAll('.cell').forEach(cell => {
-                    cell.classList.remove('deleted');
+                    cell.textContent = '';
+                    cell.classList.remove('deleted', 'x', 'o');
                 });
-                
+
                 this.setupBoard();
                 this.updateStatus();
-                this.updateMoveHistory();
             }
         }
 
         const game = new TicTacToe();
-        document.querySelector('.restart').addEventListener('click', () => game.restart());
     </script>
 </body>
 </html>
