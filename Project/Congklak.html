@@ -5,99 +5,112 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Congklak Game</title>
   <style>
-/* Orientation warning */
-#orientationWarning { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.8); color: white; display: flex; justify-content: center; align-items: center; text-align: center; font-size: 24px; z-index: 1000; /* Pastikan pesan muncul di atas semua elemen */ }
-
-body { margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f0e68c; font-family: Arial, sans-serif; }
-
-.board { 
-    display: flex; 
-    background-color: #8b4513; 
-    padding: 20px; 
-    border-radius: 20px; 
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); 
-    position: relative; 
-    height: 500px; 
-    align-items: center;
-    max-width: 90vw;  /* Add max-width to prevent overflow */
-    overflow-x: auto; /* Allow horizontal scroll if needed */
-    min-width: 800px; /* Minimum width to maintain layout */
-}
-
-.lumbung { 
-    min-width: 200px; /* Add minimum width */
-    width: 200px; 
-    height: 200px; 
-    background-color: #a0522d; 
-    border-radius: 50%; 
-    margin: 0 20px; 
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
-    position: relative;
-    flex-shrink: 0; /* Prevent lumbung from shrinking */
-}
-
-.lumbung .number { position: absolute; bottom: -30px; font-size: 24px; color: white; }
-.lumbung .seeds { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 5px; }
-.holes-container { display: flex; flex-direction: column; justify-content: space-between; height: 100%; width: 100%; }
-.holes-row { display: flex; justify-content: space-between; gap: 20px; position: relative; }
-.holes-row.top { margin-top: 30px; }
-.holes-row.bottom { margin-bottom: 30px; }
-
-.hole { 
-    width: 100px; 
-    height: 100px; 
-    background-color: #a0522d; 
-    border-radius: 50%; 
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
-    position: relative; 
-    cursor: pointer;
-    flex-shrink: 0; /* Prevent holes from shrinking */
-}
-
-.hole .number { position: absolute; font-size: 20px; color: white; }
-.holes-row.top .hole .number { top: -30px; }
-.holes-row.bottom .hole .number { bottom: -30px; }
-.hole .seeds { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 5px; }
-.seed { width: 10px; height: 10px; background-color: white; border-radius: 50%; }
-.seed-temp { position: absolute; width: 10px; height: 10px; background-color: white; border-radius: 50%; transition: all 0.3s ease; }
-
-.temp-container { 
-    position: absolute; 
-    top: 50%; 
-    left: 50%; 
-    transform: translate(-50%, -50%); 
-    width: 100px; 
-    height: 100px; 
-    background-color: rgba(160, 82, 45, 0.9); 
-    border: 2px dashed white; 
-    border-radius: 50%; 
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
-    z-index: 10;
-    flex-shrink: 0; /* Prevent temp container from shrinking */
-}
-
-.temp-container .seeds { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 5px; max-width: 80%; }
-.temp-container .number { position: absolute; bottom: -30px; font-size: 20px; color: white; }
-.hole:hover { background-color: #8b4513; }
-.turn-indicator { position: absolute; top: 0px; left: 50%; transform: translateX(-50%); font-size: 24px; color: rgb(0, 0, 0); }
-
-/* Add media query for screens smaller than 900px */
-@media screen and (max-width: 900px) {
-    body {
-        align-items: flex-start; /* Allow scrolling on small screens */
-        padding: 20px 0;
+    #orientationWarning { 
+      position: fixed; 
+      top: 0; 
+      left: 0; 
+      width: 100%; 
+      height: 100%; 
+      background-color: rgba(0, 0, 0, 0.8); 
+      color: white; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      text-align: center; 
+      font-size: 24px; 
+      z-index: 1000; 
     }
-    
-    .board {
-        margin: 0 auto; /* Center the board */
+
+    body { 
+      margin: 0; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      height: 100vh; 
+      background-color: #f0e68c; 
+      font-family: Arial, sans-serif; 
     }
-}
+
+    .board { 
+      display: flex; 
+      background-color: #8b4513; 
+      padding: 10px; 
+      border-radius: 200px; 
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); 
+      position: relative; 
+      height: 280px; 
+      align-items: center;
+      max-width: 90vw;  
+      overflow-x: auto; 
+      min-width: 800px; 
+    }
+
+    .lumbung { 
+      min-width: 100px; 
+      width: 100px; 
+      height: 200px; 
+      background-color: #a0522d; 
+      border-radius: 50%;
+      display: flex; 
+      justify-content: center;
+      align-items: center; 
+      position: relative;
+      flex-shrink: 0; 
+    }
+
+    .lumbung .number { position: absolute; bottom: 0px; font-size: 24px; color: white; }
+    .lumbung .seeds { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 5px; }
+    .holes-container { display: flex; flex-direction: column; justify-content: space-between; height: 100%; width: 100%; }
+    .holes-row { display: flex; justify-content: space-between; gap: 2px; position: relative; }
+    .holes-row.top { margin-top: 10px; }
+    .holes-row.bottom { margin-bottom: 10px; }
+
+    .hole { 
+      width: 75px; 
+      height: 75px; 
+      background-color: #a0522d; 
+      border-radius: 50%; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      position: relative; 
+      cursor: pointer;
+      flex-shrink: 0; 
+    }
+
+    .hole .number { position: absolute; font-size: 20px; color: white; }
+    .holes-row.top .hole .number { top: -20px; }
+    .holes-row.bottom .hole .number { bottom: -20px; }
+    .hole .seeds { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 5px; }
+    .seed { width: 8px; height: 8px; background-color: white; border-radius: 50%; }
+    .seed-temp { position: absolute; width: 10px; height: 10px; background-color: white; border-radius: 50%; transition: all 0.3s ease; }
+
+    .temp-container { 
+      position: absolute; 
+      top: 50%; 
+      left: 50%; 
+      transform: translate(-50%, -50%); 
+      width: 80px; 
+      height: 80px; 
+      background-color: rgba(160, 82, 45, 0.9); 
+      border: 2px dashed white; 
+      border-radius: 0%; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      z-index: 10;
+      flex-shrink: 0; 
+    }
+
+    .temp-container .seeds { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 5px; max-width: 80%; }
+    .temp-container .number { position: absolute; bottom: 0px; font-size: 20px; color: white; }
+    .hole:hover { background-color: #8b4513; }
+    .turn-indicator { position: absolute; top: 130px; left: 50%; transform: translateX(-50%); font-size: 24px; color: rgb(0, 0, 0); }
+
+    @media screen and (max-width: 900px) {
+      body { align-items: flex-start; padding: 20px 0; }
+      .board { margin: 0 auto; }
+    }
   </style>
 </head>
 <body>
@@ -114,65 +127,23 @@ body { margin: 0; display: flex; justify-content: center; align-items: center; h
 
     <div class="holes-container">
       <div class="holes-row top">
-        <div class="hole" data-side="1" data-index="0">
-          <div class="seeds"></div>
-          <div class="number">5</div>
-        </div>
-        <div class="hole" data-side="1" data-index="1">
-          <div class="seeds"></div>
-          <div class="number">5</div>
-        </div>
-        <div class="hole" data-side="1" data-index="2">
-          <div class="seeds"></div>
-          <div class="number">5</div>
-        </div>
-        <div class="hole" data-side="1" data-index="3">
-          <div class="seeds"></div>
-          <div class="number">5</div>
-        </div>
-        <div class="hole" data-side="1" data-index="4">
-          <div class="seeds"></div>
-          <div class="number">5</div>
-        </div>
-        <div class="hole" data-side="1" data-index="5">
-          <div class="seeds"></div>
-          <div class="number">5</div>
-        </div>
-        <div class="hole" data-side="1" data-index="6">
-          <div class="seeds"></div>
-          <div class="number">5</div>
-        </div>
+        <div class="hole" data-side="1" data-index="0"><div class="seeds"></div><div class="number">5</div></div>
+        <div class="hole" data-side="1" data-index="1"><div class="seeds"></div><div class="number">5</div></div>
+        <div class="hole" data-side="1" data-index="2"><div class="seeds"></div><div class="number">5</div></div>
+        <div class="hole" data-side="1" data-index="3"><div class="seeds"></div><div class="number">5</div></div>
+        <div class="hole" data-side="1" data-index="4"><div class="seeds"></div><div class="number">5</div></div>
+        <div class="hole" data-side="1" data-index="5"><div class="seeds"></div><div class="number">5</div></div>
+        <div class="hole" data-side="1" data-index="6"><div class="seeds"></div><div class="number">5</div></div>
       </div>
 
       <div class="holes-row bottom">
-        <div class="hole" data-side="2" data-index="0">
-          <div class="seeds"></div>
-          <div class="number">5</div>
-        </div>
-        <div class="hole" data-side="2" data-index="1">
-          <div class="seeds"></div>
-          <div class="number">5</div>
-        </div>
-        <div class="hole" data-side="2" data-index="2">
-          <div class="seeds"></div>
-          <div class="number">5</div>
-        </div>
-        <div class="hole" data-side="2" data-index="3">
-          <div class="seeds"></div>
-          <div class="number">5</div>
-        </div>
-        <div class="hole" data-side="2" data-index="4">
-          <div class="seeds"></div>
-          <div class="number">5</div>
-        </div>
-        <div class="hole" data-side="2" data-index="5">
-          <div class="seeds"></div>
-          <div class="number">5</div>
-        </div>
-        <div class="hole" data-side="2" data-index="6">
-          <div class="seeds"></div>
-          <div class="number">5</div>
-        </div>
+        <div class="hole" data-side="2" data-index="0"><div class="seeds"></div><div class="number">5</div></div>
+        <div class="hole" data-side="2" data-index="1"><div class="seeds"></div><div class="number">5</div></div>
+        <div class="hole" data-side="2" data-index="2"><div class="seeds"></div><div class="number">5</div></div>
+        <div class="hole" data-side="2" data-index="3"><div class="seeds"></div><div class="number">5</div></div>
+        <div class="hole" data-side="2" data-index="4"><div class="seeds"></div><div class="number">5</div></div>
+        <div class="hole" data-side="2" data-index="5"><div class="seeds"></div><div class="number">5</div></div>
+        <div class="hole" data-side="2" data-index="6"><div class="seeds"></div><div class="number">5</div></div>
       </div>
     </div>
 
@@ -181,7 +152,6 @@ body { margin: 0; display: flex; justify-content: center; align-items: center; h
       <div class="number">0</div>
     </div>
 
-    <!-- Penampung biji sementara -->
     <div class="temp-container" id="tempContainer" style="display: none;">
       <div class="seeds"></div>
       <div class="number">0</div>
@@ -226,6 +196,7 @@ body { margin: 0; display: flex; justify-content: center; align-items: center; h
     const lumbung2 = document.getElementById('lumbung2');
     const turnIndicator = document.getElementById('turnIndicator');
     let currentPlayer = 1;
+    let isDistributing = false;
 
     holes.forEach(hole => {
       const seedCount = parseInt(hole.querySelector('.number').textContent);
@@ -268,13 +239,15 @@ body { margin: 0; display: flex; justify-content: center; align-items: center; h
     }
 
     function distributeSeeds(hole) {
+      if (isDistributing) return;
+
       const side = parseInt(hole.getAttribute('data-side'));
       const index = parseInt(hole.getAttribute('data-index'));
       let seeds = parseInt(hole.querySelector('.number').textContent);
 
       if (seeds === 0) return;
 
-      // Pindahkan biji ke penampung sementara
+      isDistributing = true;
       updateHole(hole, 0);
       updateTempContainer(seeds);
 
@@ -287,44 +260,47 @@ body { margin: 0; display: flex; justify-content: center; align-items: center; h
           const lastHole = document.querySelector(`.hole[data-side="${currentSide}"][data-index="${currentIndex}"]`);
           const lastHoleCount = parseInt(lastHole.querySelector('.number').textContent);
 
-          if (lastHoleCount > 1) {
-            setTimeout(() => distributeSeeds(lastHole), 500);
+          if ((currentPlayer === 1 && currentSide === 1 && currentIndex > 6) || 
+              (currentPlayer === 2 && currentSide === 2 && currentIndex < 0)) {
+            if (!hasSeedsOnSide(currentPlayer)) {
+              alert("Tidak ada biji yang bisa dimainkan. Giliran berakhir.");
+              switchPlayer();
+            } else {
+              alert("Giliran tambahan!");
+            }
+            isDistributing = false;
+            updateTurnIndicator();
             return;
           }
 
-          if (currentSide === side && lastHoleCount === 1) {
-            // Tentukan lubang berseberangan
-            let oppositeIndex;
-            if (currentIndex === 0) oppositeIndex = 0;
-            else if (currentIndex === 1) oppositeIndex = 1;
-            else if (currentIndex === 2) oppositeIndex = 2;
-            else if (currentIndex === 3) oppositeIndex = 3;
-            else if (currentIndex === 4) oppositeIndex = 4;
-            else if (currentIndex === 5) oppositeIndex = 5;
-            else if (currentIndex === 6) oppositeIndex = 6;
-
-            const oppositeHole = document.querySelector(`.hole[data-side="${currentSide === 1 ? 2 : 1}"][data-index="${oppositeIndex}"]`);
-            const oppositeCount = parseInt(oppositeHole.querySelector('.number').textContent);
-
-            if (oppositeCount > 0) {
-              const lumbung = currentSide === 1 ? lumbung1 : lumbung2;
-              const lumbungCount = parseInt(lumbung.querySelector('.number').textContent);
-              updateLumbung(lumbung, lumbungCount + oppositeCount + 1);
+          if (lastHoleCount > 1) {
+            setTimeout(() => {
+              seeds = lastHoleCount;
               updateHole(lastHole, 0);
-              updateHole(oppositeHole, 0);
+              updateTempContainer(seeds);
+              distributeNext();
+            }, 500);
+            return;
+          }
+
+          if (lastHoleCount === 1) {
+            if (currentSide === currentPlayer) {
+              const oppositeIndex = currentIndex;
+              const oppositeHole = document.querySelector(`.hole[data-side="${currentSide === 1 ? 2 : 1}"][data-index="${oppositeIndex}"]`);
+              const oppositeCount = parseInt(oppositeHole.querySelector('.number').textContent);
+
+              if (oppositeCount > 0) {
+                const lumbung = currentPlayer === 1 ? lumbung1 : lumbung2;
+                const lumbungCount = parseInt(lumbung.querySelector('.number').textContent);
+                updateLumbung(lumbung, lumbungCount + oppositeCount + 1);
+                updateHole(lastHole, 0);
+                updateHole(oppositeHole, 0);
+              }
             }
+            switchPlayer();
           }
 
-          // Cek apakah pemain berikutnya memiliki biji di daerahnya
-          const nextPlayer = currentPlayer === 1 ? 2 : 1;
-          if (!hasSeedsOnSide(nextPlayer)) {
-            alert(`Pemain ${nextPlayer} tidak memiliki biji di daerahnya. Giliran dilewati.`);
-            currentPlayer = nextPlayer === 1 ? 2 : 1;
-          } else {
-            currentPlayer = nextPlayer;
-          }
-
-          updateTurnIndicator();
+          isDistributing = false;
           return;
         }
 
@@ -338,7 +314,13 @@ body { margin: 0; display: flex; justify-content: center; align-items: center; h
               seeds--;
               updateTempContainer(seeds);
               if (seeds === 0) {
-                alert("Giliran tambahan!");
+                if (!hasSeedsOnSide(1)) {
+                  alert("Tidak ada biji yang bisa dimainkan. Giliran berakhir.");
+                  switchPlayer();
+                } else {
+                  alert("Giliran tambahan!");
+                }
+                isDistributing = false;
                 updateTurnIndicator();
                 return;
               }
@@ -356,7 +338,13 @@ body { margin: 0; display: flex; justify-content: center; align-items: center; h
               seeds--;
               updateTempContainer(seeds);
               if (seeds === 0) {
-                alert("Giliran tambahan!");
+                if (!hasSeedsOnSide(2)) {
+                  alert("Tidak ada biji yang bisa dimainkan. Giliran berakhir.");
+                  switchPlayer();
+                } else {
+                  alert("Giliran tambahan!");
+                }
+                isDistributing = false;
                 updateTurnIndicator();
                 return;
               }
@@ -378,11 +366,46 @@ body { margin: 0; display: flex; justify-content: center; align-items: center; h
         });
       }
 
+      function switchPlayer() {
+        const nextPlayer = currentPlayer === 1 ? 2 : 1;
+        const player1HasSeeds = hasSeedsOnSide(1);
+        const player2HasSeeds = hasSeedsOnSide(2);
+
+        if (!player1HasSeeds && !player2HasSeeds) {
+          alert("Permainan Berakhir!");
+          const lumbung1Count = parseInt(lumbung1.querySelector('.number').textContent);
+          const lumbung2Count = parseInt(lumbung2.querySelector('.number').textContent);
+          alert(`Hasil Akhir:\nPemain 1: ${lumbung1Count}\nPemain 2: ${lumbung2Count}`);
+          return;
+        }
+
+        if (!hasSeedsOnSide(nextPlayer)) {
+          alert(`Pemain ${nextPlayer} tidak memiliki biji di daerahnya. Giliran dilewati.`);
+          currentPlayer = nextPlayer === 1 ? 2 : 1;
+
+          if (!hasSeedsOnSide(currentPlayer)) {
+            alert("Permainan Berakhir!");
+            const lumbung1Count = parseInt(lumbung1.querySelector('.number').textContent);
+            const lumbung2Count = parseInt(lumbung2.querySelector('.number').textContent);
+            alert(`Hasil Akhir:\nPemain 1: ${lumbung1Count}\nPemain 2: ${lumbung2Count}`);
+            return;
+          }
+        } else {
+          currentPlayer = nextPlayer;
+        }
+
+        updateTurnIndicator();
+      }
+
       setTimeout(distributeNext, 100);
     }
 
     holes.forEach(hole => {
       hole.addEventListener('click', () => {
+        if (isDistributing) {
+          alert("Mohon tunggu, biji sedang didistribusikan!");
+          return;
+        }
         const side = parseInt(hole.getAttribute('data-side'));
         if (side === currentPlayer) {
           distributeSeeds(hole);
@@ -393,21 +416,21 @@ body { margin: 0; display: flex; justify-content: center; align-items: center; h
     });
 
     updateTurnIndicator();
+
     function checkOrientation() {
-        const orientationWarning = document.getElementById('orientationWarning');
-        const isPortrait = window.matchMedia('(orientation: portrait)').matches;
+      const orientationWarning = document.getElementById('orientationWarning');
+      const isPortrait = window.matchMedia('(orientation: portrait)').matches;
 
-        if (isPortrait) {
-            orientationWarning.style.display = 'flex'; // Tampilkan pesan
-        } else {
-            orientationWarning.style.display = 'none'; // Sembunyikan pesan
-        }
-        }
+      if (isPortrait) {
+        orientationWarning.style.display = 'flex';
+      } else {
+        orientationWarning.style.display = 'none';
+      }
+    }
 
-        // Jalankan fungsi saat halaman dimuat dan saat orientasi berubah
-        window.addEventListener('load', checkOrientation);
-        window.addEventListener('resize', checkOrientation);
-        window.addEventListener('orientationchange', checkOrientation);
+    window.addEventListener('load', checkOrientation);
+    window.addEventListener('resize', checkOrientation);
+    window.addEventListener('orientationchange', checkOrientation);
   </script>
 </body>
 </html>
